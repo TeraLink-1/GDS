@@ -1,0 +1,78 @@
+version: "3.9"
+services:
+
+  redis:
+    image: redis:7
+    ports: ["6379:6379"]
+
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: gds_user
+      POSTGRES_PASSWORD: gds_password
+      POSTGRES_DB: gds
+    ports: ["5432:5432"]
+    volumes:
+      - ./deployment/postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  archiver:
+    build:
+      context: .
+      dockerfile: src/services/archiver/Dockerfile
+    depends_on: [redis, postgres]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+
+  decomm_service:
+    build:
+      context: .
+      dockerfile: src/services/decomm_service/Dockerfile
+    depends_on: [redis]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+
+  gs_control:
+    build:
+      context: .
+      dockerfile: src/services/gs_control/Dockerfile
+    depends_on: [redis]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+
+  telemetry_gateway:
+    build:
+      context: .
+      dockerfile: src/services/telemetry_gateway/Dockerfile
+    depends_on: [redis, postgres, archiver]
+    ports: ["8080:8080"]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+
+  raw_frame_producer:
+    build:
+      context: .
+      dockerfile: examples/raw_frame_producer/Dockerfile
+    depends_on: [redis]
+    environment:
+      REDIS_URL: redis://redis:6379/0
+
+  openmct:
+    build:
+      context: .
+      dockerfile: src/services/openmct_config/Dockerfile
+    depends_on: [telemetry_gateway]
+    ports: ["8081:8081"]
+
+  fprime_link:
+    build:
+      context: .
+      dockerfile: src/services/fprime_link/Dockerfile
+    depends_on: [redis]
+    ports:
+      - "50000:50000"  # TCP port for F Prime protocol
+      - "50001:50001"  # WebSocket port
+    environment:
+      REDIS_URL: redis://redis:6379/0
+      FPRIME_TCP_HOST: "0.0.0.0"
+      FPRIME_TCP_PORT: "50000"
+      FPRIME_WS_PORT: "50001"

@@ -1,0 +1,8 @@
+{
+  "name": "teralink-openmct",
+  "private": true,
+  "dependencies": {
+    "openmct": "^2.1.0",
+    "express": "^4.19.0"
+  }
+}
