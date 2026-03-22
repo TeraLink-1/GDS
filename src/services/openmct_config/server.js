@@ -4,7 +4,8 @@ const path = require("path");
 const app = express();
 const port = process.env.PORT || 8081;
 
-const dist = path.dirname(require.resolve("openmct/dist/openmct.js"));
+// Point directly at the dist folder
+const dist = path.join(__dirname, 'node_modules/openmct/dist');
 
 app.use("/openmct", express.static(dist));
 app.use("/", express.static(__dirname));
