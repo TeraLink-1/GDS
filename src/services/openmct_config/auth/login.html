@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>TERALINK-1 Login</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: sans-serif;
+      background: #1a1a2e;
+      color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+    }
+    .card {
+      background: #16213e;
+      border: 1px solid #0f3460;
+      border-radius: 8px;
+      padding: 2rem;
+      width: 340px;
+    }
+    h1 { font-size: 1.2rem; margin-bottom: 1.5rem; letter-spacing: 0.05em; }
+    label { display: block; font-size: 0.8rem; color: #a0a0c0; margin-bottom: 0.3rem; }
+    input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      background: #0f3460;
+      border: 1px solid #1a508b;
+      border-radius: 4px;
+      color: #e0e0e0;
+      font-size: 0.95rem;
+      margin-bottom: 1rem;
+    }
+    input:focus { outline: 1px solid #4a9eff; }
+    button {
+      width: 100%;
+      padding: 0.6rem;
+      background: #0f3460;
+      border: 1px solid #4a9eff;
+      border-radius: 4px;
+      color: #4a9eff;
+      font-size: 0.95rem;
+      cursor: pointer;
+      letter-spacing: 0.05em;
+    }
+    button:hover { background: #1a508b; }
+    .hint { font-size: 0.75rem; color: #606080; margin-top: 1rem; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>TERALINK-1 GDS</h1>
+    <form method="POST" action="/login">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username" required>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required>
+
+      <label for="totp_code">2FA Code</label>
+      <input type="text" id="totp_code" name="totp_code" inputmode="numeric"
+             pattern="[0-9]{6}" maxlength="6" autocomplete="one-time-code" required>
+
+      <button type="submit">Sign in</button>
+    </form>
+    <p class="hint">Use your authenticator app for the 2FA code.</p>
+  </div>
+</body>
+</html>
